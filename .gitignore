@@ -1,0 +1,7 @@
+# Ignora il file delle password
+*.ht*
+
+# 
+temperature.csv.*
+dygraph-combined.js
+/var/www/cgi-bin/__pycache__

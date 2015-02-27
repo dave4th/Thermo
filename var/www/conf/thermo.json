@@ -1,0 +1,23 @@
+[
+    {
+        "name": "redis", 
+        "value": [
+            {
+                "name": "hostname", 
+                "value": "localhost"
+            }, 
+            {
+                "name": "port", 
+                "value": "6379"
+            }, 
+            {
+                "name": "db", 
+                "value": "0"
+            }, 
+            {
+                "name": "password", 
+                "value": ""
+            }
+        ]
+    }
+]
