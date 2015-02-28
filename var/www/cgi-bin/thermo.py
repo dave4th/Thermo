@@ -54,17 +54,27 @@ def FindSetPoint():
     SetPoint=flt.Decode(SetPointValue)
     return SetPoint
 
-# Ritorna la temperatura del sensore di riferimento
-def Temperatura():
-    # Trovo il sensore di riferimento
+## Trova temperature
+# La funzione e` molto personalizzata per il caso in questione
+# restituisce un'array con la temperatura del sensore di riferimento [0]
+# ed il resto, se presente, come una stringa di valori separata da ","
+# pronta per il file .csv
+def Temperature():
+    Sensor1stName='err'
+    SensorNthName=""
+    # Prima devo trovare il sensore di riferimento
     for i in MyDB.keys("sensore:temperatura:*"):
         j = flt.Decode(i)	# bin -> str , ed appoggio a variabile per comodita`
-        ReadFileSensor=flt.ReadFile(DirFile1w[0]+"/"+j[20:]+"/"+DirFile1w[1])       # Leggo il file sonda
+        ReadFileSensor=ReadFile(DirFile1w[0]+"/"+j[20:]+"/"+DirFile1w[1])       # Leggo il file sonda
         if ReadFileSensor[36:39] == "YES":
-            Temperatura=int(ReadFileSensor[69:])/1000
+            ReadTemp=int(ReadFileSensor[69:])/1000
         else:
-            Temperatura='err'
-    return Temperatura
+            ReadTemp='err'
+        if MyDB.get(j) == MyDB.hget("thermo:pid","sensor"):
+            Sensor1stName = ReadTemp
+        else:
+            SensorNthName = SensorNthName+","+str(ReadTemp)
+    return Sensor1stName,SensorNthName
 
 # Apre/legge un file e restituisce il contenuto
 def ReadFile(Filename):
@@ -109,17 +119,26 @@ def NetCheck(Hostname,Port):
     else:
         return True
 
-# Funzione invio avvisi al database (Redis) server dei messaggi
+## Funzione invio avvisi al database (Redis) server dei messaggi
+# msg:{pc}:{id}:<data&ora>,<alert/alarm>,Descrizione,Valore,Unita` di misura,Data
 def InviaAvviso(MsgID,Type,Desc,Value,UM,Date):
     Host=flt.Decode(MyDB.hget("redis:server:message","hostname"))
     Port=flt.Decode(MyDB.hget("redis:server:message","port"))
     Database=flt.Decode(MyDB.hget("redis:server:message","database"))
     Password=flt.Decode(MyDB.hget("redis:server:message","password"))
-    if NetCheck(Host,Port):
+    if NetCheck(Host,int(Port)):
         MyMsgDB = flt.OpenDB(Host,Port,Database,Password)
         MyMsgDB.hmset(MsgID, {"type": Type, "desc": Desc, "value": Value, "um": UM, "date": Date})
     else:
         print ("Non posso inviare l\'avviso a \"%s:%d\".\n" % (Hostname,Port))
+
+# Aiuto personalizzazione dei messagi di avviso per risparmiare qualche digitazione
+# Data+ora [0], Data [1]
+def AlertsID():
+    MsgIDate=time.strftime("%Y%m%d%H%M%S",time.localtime())
+    #MsgType="alert"
+    MsgDate=time.strftime("%Y/%m/%d %H:%M:%S",time.localtime())
+    return MsgIDate,MsgDate
 
 
 # Apro il database Redis con l'istruzione della mia libreria
@@ -163,25 +182,25 @@ try:
             else:
                 Output="err"
             #
-            ## Calcolo della sonda di temperatura principale
-            SensorNthName=""
-            # Prima devo trovare il sensore di riferimento
-            for i in MyDB.keys("sensore:temperatura:*"):
-                j = flt.Decode(i)	# bin -> str , ed appoggio a variabile per comodita`
-                ReadFileSensor=ReadFile(DirFile1w[0]+"/"+j[20:]+"/"+DirFile1w[1])       # Leggo il file sonda
-                if ReadFileSensor[36:39] == "YES":
-                    ReadTemp=int(ReadFileSensor[69:])/1000
-                else:
-                    ReadTemp='err'
-                if MyDB.get(j) == MyDB.hget("thermo:pid","sensor"):
-                    Sensor1stName = ReadTemp
-                else:
-                    SensorNthName = SensorNthName+","+str(ReadTemp)
+            ### Calcolo della sonda di temperatura principale
+            #SensorNthName=""
+            ## Prima devo trovare il sensore di riferimento
+            #for i in MyDB.keys("sensore:temperatura:*"):
+            #    j = flt.Decode(i)	# bin -> str , ed appoggio a variabile per comodita`
+            #    ReadFileSensor=ReadFile(DirFile1w[0]+"/"+j[20:]+"/"+DirFile1w[1])       # Leggo il file sonda
+            #    if ReadFileSensor[36:39] == "YES":
+            #        ReadTemp=int(ReadFileSensor[69:])/1000
+            #    else:
+            #        ReadTemp='err'
+            #    if MyDB.get(j) == MyDB.hget("thermo:pid","sensor"):
+            #        Sensor1stName = ReadTemp
+            #    else:
+            #        SensorNthName = SensorNthName+","+str(ReadTemp)
             #
             # Metto insieme le variabili trovate in una unica riga per l'inserimento nel CSV file
-            RigaCSV=DataCSV+","+SetPoint+","+Output+","+str(Sensor1stName)
-            if SensorNthName != "":
-                RigaCSV=RigaCSV+SensorNthName
+            RigaCSV=DataCSV+","+SetPoint+","+Output+","+str(Temperature()[0])
+            if Temperature()[1] != "":
+                RigaCSV=RigaCSV+Temperature()[1]
             #
             # Se non esiste, crea temperature.csv
             if not os.path.exists(FileCSV):
@@ -223,7 +242,7 @@ try:
                 GPIO.output(Termostato, False)
             else:
                 # Set temperatura/e, messe qua perche` a monte verrebbero valutate inutilmente
-                TemperaturaLetta=Temperatura()
+                TemperaturaLetta=Temperature()[0]
                 TemperaturaADD=flt.Decode(MyDB.hget("thermo:pid","tempadd"))
                 TemperaturaSUB=flt.Decode(MyDB.hget("thermo:pid","tempsub"))
                 if flt.Decode(MyDB.get("thermo:function")) == "on":
@@ -238,10 +257,12 @@ try:
                 else:
                     SetPoint='err'
                     print("Selezione di funzionamento non valida o non presente")
+                print ("Temperatura letta:",TemperaturaLetta)
+                print ("Set point:",SetPoint)
                 if SetPoint == 'err' or TemperaturaLetta == 'err':
                     print("Errore di lettura di una temperatura")
-                    # Sta` robe e` da semplificare !!!!!
-                    InviaAvviso("msg:thermo:ReadTemp:"+time.strftime("%Y%m%d%H%M%S",time.localtime()),"alert","Errore lettura temperatura: SetPoint, TemperaturaLetta",SetPoint+" "+TemperaturaLetta,"C",time.strftime("%Y/%m/%d %H:%M:%S",time.localtime()))
+                    # Non e` detto che debba stare qua, probabilmente dovro` spostarlo nella funzione che trova le temperature, ha piu` senso.
+                    InviaAvviso("msg:thermo:ReadTemp:"+AlertsID()[0],"alert","Errore lettura temperatura: SetPoint o TemperaturaLetta",SetPoint+" "+TemperaturaLetta,"C",AlertsID()[1])
                 else:
                     if (float(TemperaturaLetta) - float(TemperaturaADD)) > float(SetPoint):
                         GPIO.output(Termostato, False)
