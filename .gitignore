@@ -1,5 +1,5 @@
 # Ignora il file delle password
-*.ht*
+*.htpasswd
 
 # 
 temperature.csv.*
