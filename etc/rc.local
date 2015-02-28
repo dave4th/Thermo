@@ -23,7 +23,7 @@ EXE="thermo.py"
 if [ -x $DIR/$EXE ]
     then
         echo "\"$EXE\" started!"
-        cd $DIREXE
+        cd $DIR
         python3 $EXE &
     else
         echo "Errore! \"$EXE\" non si e\` avviato"
