@@ -45,8 +45,6 @@ for i in MyDB.keys(RedisKey+":*"):
     if not Esiste:
         MyDB.delete(i)
 
-# Elimino quelle inesistenti
-
 # Start web page - Uso l'intestazione "web" della mia libreria
 print (mhl.MyHtml())
 print (mhl.MyHtmlHead())

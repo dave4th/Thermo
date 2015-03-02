@@ -28,7 +28,7 @@ MyDB = flt.OpenDBFile(ConfigFile)
 # Genero chiave/valori se non esiste
 # Assegno dei valori piu` o meno standard
 if not MyDB.exists(RedisKey):
-    MyDB.hmset(RedisKey,{"hostname":"centred","port":6379,"database":0,"password":""})
+    MyDB.hmset(RedisKey,{"hostname":"nessuno","port":6379,"database":0,"password":""})
 
 # Start web page - Uso l'intestazione "web" della mia libreria
 print (mhl.MyHtml())

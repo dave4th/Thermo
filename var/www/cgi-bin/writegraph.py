@@ -16,7 +16,7 @@ import mjl, mhl, flt
 import redis
 
 # Parametri generali
-TestoPagina="Configurazione PID"
+TestoPagina="Configurazione grafico"
 ConfigFile="../conf/thermo.json"
 #WriteFile="/cgi-bin/writegraph.py"
 # Redis "key"
