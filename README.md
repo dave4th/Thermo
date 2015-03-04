@@ -6,3 +6,6 @@ Nginx
 
 ## CGI Script
 Python
+
+# Note d'uso e installazione
+http://www.raspibo.org/wiki/index.php/Thermo
