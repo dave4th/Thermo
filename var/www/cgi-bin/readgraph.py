@@ -57,7 +57,7 @@ Non ho rinominato i campi e non sono stato a riordinare le voci.<br/>
             </li>
             <li>Temperatura assegnata alla rappresentazione del comando uscita nel grafico delle temperature
             </li>
-            <li>Puo` essere un qualsiasi valore, meglio se diverso da uno qualsiasi dei set poin impostato.
+            <li>Puo` essere un qualsiasi valore, meglio se diverso da uno qualsiasi dei set point impostato.
             </li>
         </ul>
     </li>
@@ -91,7 +91,7 @@ for i in MyDB.hkeys(RedisKey):
     if flt.Decode(i) == "freqcheck":
         print (mhl.MyNumberForm(flt.Decode(i),flt.Decode(MyDB.hget(RedisKey,i)),"2","2","1","60","1","required",""))
     elif flt.Decode(i) == "outtemp":
-        print (mhl.MyNumberForm(flt.Decode(i),flt.Decode(MyDB.hget(RedisKey,i)),"2","2","5","30","1","required",""))
+        print (mhl.MyNumberForm(flt.Decode(i),flt.Decode(MyDB.hget(RedisKey,i)),"2","2","5","30","0.1","required",""))
     else:
         print ("Qualcosa e` andato storto")
     print ("</td>")
