@@ -64,7 +64,7 @@ def Temperature():
     SensorNthName=""
     # Prima devo trovare il sensore di riferimento
     for i in MyDB.keys("sensore:temperatura:*"):
-        j = flt.Decode(i)	# bin -> str , ed appoggio a variabile per comodita`
+        j = flt.Decode(i)                                               	# bin -> str , ed appoggio a variabile per comodita`
         ReadFileSensor=ReadFile(DirFile1w[0]+"/"+j[20:]+"/"+DirFile1w[1])       # Leggo il file sonda
         if ReadFileSensor[36:39] == "YES":
             ReadTemp=int(ReadFileSensor[69:])/1000
@@ -85,6 +85,7 @@ def ReadFile(Filename):
         return DataFile
     else:
         print ("Errore, manca il file", Filename)
+        InviaAvviso("msg:thermo:ReadFile:"+AlertsID()[0],"alert","Errore lettura file",Filename,"",AlertsID()[1])
         #exit()
         return "errore"
 
@@ -162,6 +163,7 @@ try:
         ## Ciclo grafico
         # Aggiorna il file CSV delle temperature
         if int(time.time()) - TempoInizioGrafico > TempoGrafico:
+            print("Ciclo aggiornamento grafico\n")
             #
             # Scrivo il file temperature.csv
             # devo solo stare attento a on/man/antigelo/off per il set point
@@ -199,6 +201,7 @@ try:
             #
             # Metto insieme le variabili trovate in una unica riga per l'inserimento nel CSV file
             RigaCSV=DataCSV+","+SetPoint+","+Output+","+str(Temperature()[0])
+            print("---\n")
             if Temperature()[1] != "":
                 RigaCSV=RigaCSV+Temperature()[1]
             #
@@ -234,6 +237,7 @@ try:
         ## Ciclo PID
         # Controlla la temperatura e comanda l'uscita (Termostato)
         if int(time.time()) - TempoInizioCiclo > TempoCiclo:
+            print("Ciclo PID\n")
             # Set uscita gpio
             Termostato=int(flt.Decode(MyDB.hget("thermo:pid","out")))
             GPIO.setup(Termostato, GPIO.OUT)
@@ -243,6 +247,10 @@ try:
             else:
                 # Set temperatura/e, messe qua perche` a monte verrebbero valutate inutilmente
                 TemperaturaLetta=Temperature()[0]
+                # Controlle un'eventuale lettura fuorirange della temperatura ed invio un'allarme
+                if TemperaturaLetta > 35 or TemperaturaLetta < 0:
+                    print("ALLARME: Temperatura letta fuori range!")
+                    InviaAvviso("msg:thermo:ReadTemp:"+AlertsID()[0],"alert","ALLARME Temperatura letta fuori range (min 0, max 35)",TemperaturaLetta,"C",AlertsID()[1])
                 TemperaturaADD=flt.Decode(MyDB.hget("thermo:pid","tempadd"))
                 TemperaturaSUB=flt.Decode(MyDB.hget("thermo:pid","tempsub"))
                 if flt.Decode(MyDB.get("thermo:function")) == "on":
@@ -278,5 +286,9 @@ try:
             OutputStateMemory=GPIO.input(Termostato)
         #
         # end try:
-except KeyboardInterrupt:
+#except KeyboardInterrupt:
+#    GPIO.cleanup()
+#except:
+#    GPIO.cleanup()
+finally:
     GPIO.cleanup()

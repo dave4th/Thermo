@@ -8,7 +8,7 @@ import cgi
 import cgitb
 
 # Abilita gli errori al server web/http
-cgitb.enable()
+#cgitb.enable()
 
 # Le mie librerie Json, Html
 import mjl, mhl
