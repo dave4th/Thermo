@@ -13,12 +13,23 @@ cgitb.enable()
 # Le mie librerie Json, Html, flt (Thermo(Redis))
 import mjl, mhl, flt
 
+import redis,os # Questa volta servira` solo os, ma lascio anche redis
 
 # Parametri generali
-TestoPagina="Archivia grafico corrente / Sposta \"temperature.csv\" in archivio"
-WriteFile="/cgi-bin/writecsv.py"
-FileCSV="../temperature.csv"
+TestoPagina="Consultazione archivi grafici delle temperature"
+#ConfigFile=""
+WriteFile="/cgi-bin/writegrapharchive.py"
+# Redis "key"
+#RedisKey = ""
+# Archive
+DirArchive = "/var/www/archive/"
 
+# Apro il database Redis con l'istruzione della mia libreria
+#MyDB = flt.OpenDBFile(ConfigFile)
+
+# Cerco i sensori
+ListArchive = sorted(os.listdir(DirArchive), reverse=True)
+#ListArchive.remove("???")
 
 # Start web page - Uso l'intestazione "web" della mia libreria
 print (mhl.MyHtml())
@@ -28,11 +39,11 @@ print (mhl.MyHtmlHead())
 print ("<h1>","<center>",TestoPagina,"</center>","</h1>")
 #print ("<hr/>","<br/>")
 # Eventuale help/annotazione
-print ("<p>Non ci sono impostazioni, il file",FileCSV,"verra` rinominato aggiungendogli la data e spostato nella directory \"archive\".</p>")
-print ("<p>Sara` ricreato un nuovo \"temperature.csv\".</p>")
-print ("<p>Questa funzione e` da utilizzarsi quando si vuole ripulire ed archiviare il grafico corrente e/o sono sate aggiunte, eliminate, o cambiate le descrizioni delle sonde di temperatura.</p>")
-print ("<hr/><br/>")
-
+print ("""
+Questo elenca i files in archivio dal piu` recente e permette di selezionarne uno per visualizarlo.
+<br/>
+<br/>
+""")
 
 # Inizio del form
 print (mhl.MyActionForm(WriteFile,"POST"))
@@ -40,14 +51,16 @@ print (mhl.MyActionForm(WriteFile,"POST"))
 print ("<table>")
 
 print ("<tr>")
-print ("<td colspan=\"2\">")
+print ("<td>")
+print (mhl.MyDropDown("archive",ListArchive,""))
+print ("</td>")
+print ("</tr>")
+print ("<tr>")
+print ("<td>")
 print ("<hr/>")
 print ("</td>")
 print ("</tr>")
-
 print ("<tr>")
-print ("<td>")
-print ("</td>")
 print ("<td>")
 print (mhl.MyButtonForm("submit","Submit"))
 print ("</td>")
