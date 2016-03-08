@@ -14,6 +14,9 @@ Nginx
 ## CGI Script
 Python
 
+## Chart
+http://dygraphs.com/
+
 # Alcune note d'uso e installazione
 http://www.raspibo.org/wiki/index.php/Thermo
 
