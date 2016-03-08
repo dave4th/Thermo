@@ -3,5 +3,5 @@
 
 # 
 temperature.csv.*
-dygraph-combined.js
+#dygraph-combined.js
 /var/www/cgi-bin/__pycache__
