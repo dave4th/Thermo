@@ -91,9 +91,9 @@ server {
 	# deny access to .htaccess files, if Apache's document root
 	# concurs with nginx's one
 	#
-	#location ~ /\.ht {
-	#	deny all;
-	#}
+	location ~ /\.ht {
+		deny all;
+	}
 
 	# fast cgi support
 	include /etc/nginx/fcgiwrap.conf;
