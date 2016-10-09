@@ -22,3 +22,18 @@ http://www.raspibo.org/wiki/index.php/Thermo
 
 # Appunti utili (?)
 https://github.com/raspibo/Thermo/wiki
+
+
+# Aggiornamenti
+## 2016 10 06
+Aggiunto invio temperatura alla centralina di livello 1 (https://github.com/raspibo/Livello1)
+  apt-get install python3-pip
+  pip-3.2 install paho-mqtt
+
+
+MEMO:
+
+Comandi usati per copia su repository git:
+  cp -varpu --parents /etc/rc.local .
+  cp -varpu --parents /etc/nginx/fcgiwrap.conf /etc/nginx/sites-available/thermo /etc/nginx/sites-enabled/thermo .
+  cp -varpu --parents /var/www/ .

@@ -184,7 +184,7 @@ try:
             else:
                 Output="err"
             #
-            ### Calcolo della sonda di temperatura principale
+            ### Calcolo della sonda di temperatura principale (e` fatto nella funzione Temperature() )
             #SensorNthName=""
             ## Prima devo trovare il sensore di riferimento
             #for i in MyDB.keys("sensore:temperatura:*"):
@@ -233,6 +233,10 @@ try:
             # flt.Decode(MyDB.hget("thermo:graph","freqcheck")) decodifico
             # int(flt.Decode(MyDB.hget("thermo:graph","freqcheck"))) trasformo in numero intero
             TempoGrafico=int(flt.Decode(MyDB.hget("thermo:graph","freqcheck")))*60      # moltiplico per 60 (secondi)
+            #
+            # Aggiungo qui l'invio della temperatura di riferimento alla centralina level1
+            flt.InviaMqttData( MyDB, 'I/Casa/PrimoPiano/Corridoio/Temperatura', '{ "ID" : "Thermo", "Valore" : "%d" }' % Temperature()[0] )
+
         #
         ## Ciclo PID
         # Controlla la temperatura e comanda l'uscita (Termostato)
