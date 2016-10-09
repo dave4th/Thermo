@@ -235,7 +235,7 @@ try:
             TempoGrafico=int(flt.Decode(MyDB.hget("thermo:graph","freqcheck")))*60      # moltiplico per 60 (secondi)
             #
             # Aggiungo qui l'invio della temperatura di riferimento alla centralina level1
-            flt.InviaMqttData( MyDB, 'I/Casa/PrimoPiano/Corridoio/Temperatura', '{ "ID" : "Thermo", "Valore" : "%d" }' % Temperature()[0] )
+            flt.InviaMqttData( MyDB, 'I/Casa/PrimoPiano/Corridoio/Temperatura', '{ "ID" : "Thermo", "Valore" : "%s" }' % Temperature()[0] )
 
         #
         ## Ciclo PID
