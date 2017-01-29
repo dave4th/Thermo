@@ -1,0 +1,22 @@
+#! /bin/sh
+### thermo_cron_check.sh
+# Ho creato questo script per controllare che thermo.py
+# rimanga in esecuzione, anche in caso di errore/i di
+# programmazione che blocca/no il programma insapettatamente.
+### END INFO
+
+#DIR=/var/www/cgi-bin
+#DAEMON=$DIR/thermo.py
+DAEMON_NAME=thermo
+
+
+PID=`ps -e -o pid,cmd | grep "$DAEMON_NAME[.]py" | awk '{ print $1 }'`
+if [ "$PID" != "" ]
+    then
+        echo "$DAEMON_NAME is running!"
+        echo "Pid is: $PID"
+    else
+        echo "$DAEMON_NAME not running!"
+        redis-cli -h centred hmset msg:redis:alive:$(date +\%Y\%m\%d\%H\%M\%S) type "alert" desc "Thermo in errore, tentativo di riavvio demone" value "on" um "" date "$(date +\%Y/\%m/\%d\ \%H:\%M:\%S)" > /dev/null
+        /root/bin/thermo_init.d.sh start
+fi

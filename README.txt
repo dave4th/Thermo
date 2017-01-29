@@ -38,3 +38,6 @@ Comandi usati per copia su repository git:
 cp -varpu --parents /etc/rc.local .
 cp -varpu --parents /etc/nginx/fcgiwrap.conf /etc/nginx/sites-available/thermo /etc/nginx/sites-enabled/thermo .
 cp -varpu --parents /var/www/ .
+cp -varpu --parents /etc/cron.hourly/thermo-check .
+sudo cp -varpu --parents /root/bin/thermo_init.d.sh .
+  sudo chown pi:pi -R root/
