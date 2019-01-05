@@ -239,6 +239,7 @@ try:
             flt.InviaMqttData( MyDB, 'I/Casa/PianoUno/Corridoio/Temperatura', '{{ "ID" : "Thermo", "Valore" : "{:.3f}" }}'.format(Temperature()[0]) )
             #flt.InviaMqttData( MyDB, 'I/Casa/PrimoPiano/Corridoio/Temperatura', str({ "ID" : "Thermo", "Valore" : "{:.3f}".format(Temperature()[0]) }) ) # Non va bene perche` mette le virgolette semplici
             #flt.InviaMqttData( MyDB, 'I/Casa/PrimoPiano/Corridoio/Temperatura', '{ "ID" : "Thermo", "Valore" : "%.3f" }' % Temperature()[0] )
+            print("End invia mqtt da thermo")
 
         #
         ## Ciclo PID

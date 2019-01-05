@@ -27,7 +27,7 @@ if [ -x $DIR/$EXE ]
         python3 $EXE &
         redis-cli -h centred hmset msg:alert:alive:thermo:$(date +\%Y\%m\%d\%H\%M\%S) type "alert" desc "Centralina thermo [ri]avviata .." value "On" um "" date "$(date +\%Y/\%m/\%d\ \%H:\%M:\%S)"
     else
-        redis-cli -h centred hmset msg:alarm:alive:thermo:$(date +\%Y\%m\%d\%H\%M\%S) type "alarm" desc "Errore ! Centralina thermo non si e` [ri]avviata correttamente .." value "Off" um "" date "$(date +\%Y/\%m/\%d\ \%H:\%M:\%S)"
+        redis-cli -h centred hmset msg:alarm:alive:thermo:$(date +\%Y\%m\%d\%H\%M\%S) type "alarm" desc "Errore ! Centralina thermo non si e\` [ri]avviata correttamente .." value "Off" um "" date "$(date +\%Y/\%m/\%d\ \%H:\%M:\%S)"
         echo "Errore! \"$EXE\" non si e\` avviato"
 fi
 
