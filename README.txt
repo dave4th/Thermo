@@ -30,6 +30,10 @@ Aggiornamenti
     Aggiunto invio temperatura alla centralina di livello 1 (https://github.com/raspibo/Livello1)
       apt-get install python3-pip
       pip-3.2 install paho-mqtt
+  2019 01 06
+    Miglioramento della gestione PID (non e` un vero e proprio PID, non lo e` mai stato):
+      Ora controllo se acceso e se Temperatura attuale + Temperatura scarto (add) > Temperatura di set point, spengo,
+                     altrimenti se Temperatura attuale - Temperatura scarto (sub) < Temperatura di set point, accendo.
 
 
 MEMO:

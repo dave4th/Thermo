@@ -51,24 +51,32 @@ Non ho rinominato i campi e non sono stato a riordinare le voci.<br/>
             </li>
         </ul>
     </li>
-    <li>"tempadd"
+    <li>"ADD e SUB"<br/>
+        Sono utilizzati per il controllo riscaldamento, ADD ferma il riscaldamento a "n.n" gradi prima del setpoint, SUB accende se la temperatura scende al setpoint piu` "n.n".<br/>
+        Se acceso, Temperatura Letta + ADD < Setpoint, spengo.<br/>
+        Se spento, Temperatura Letta - SUB > Setpoint, accendo.<br/>
+        La cosa funziona perche` passa almeno un tempo "freqcheck" fra un acceso ed uno spento, quindi, utilizzare anche questa variabile per definire le tempistiche di controllo (quanto tempo almeno rimane acceso/spento).
         <ul>
-            <li>Il valore e` in gradi
-            </li>
-            <li>Corrisponde alla maggiorazione della temperatura positiva
-            </li>
-            <li>Serve per riscaldare di "n,n" gradi in piu` della soglia preimpostata
-            </li>
-        </ul>
-    </li>
-    <li>"tempsub"
-        <ul>
-            <li>Il valore e` in gradi
-            </li>
-            <li>Corrisponde alla sottrazione di temperatura negativa
-            </li>
-            <li>Serve per attendere che il riscaldamento si attivi "n,n" gradi sotto alla soglia preimpostata
-            </li>
+        <li>"tempadd"
+            <ul>
+                <li>Il valore e` in gradi
+                </li>
+                <li>Corrisponde alla maggiorazione della temperatura positiva
+                </li>
+                <li>Serve per fermare il riscaldamento "n,n" gradi in meno della soglia preimpostata
+                </li>
+            </ul>
+        </li>
+        <li>"tempsub"
+            <ul>
+                <li>Il valore e` in gradi
+                </li>
+                <li>Corrisponde alla sottrazione di temperatura negativa
+                </li>
+                <li>Serve per attendere che il riscaldamento si attivi "n,n" gradi sopra alla soglia preimpostata
+                </li>
+            </ul>
+        </li>
         </ul>
     </li>
     <li>"sensor"

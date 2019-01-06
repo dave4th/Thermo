@@ -280,10 +280,17 @@ try:
                     # Non e` detto che debba stare qua, probabilmente dovro` spostarlo nella funzione che trova le temperature, ha piu` senso.
                     InviaAvviso("msg:thermo:ReadTemp:"+AlertsID()[0],"alert","Errore lettura temperatura: SetPoint o TemperaturaLetta",SetPoint+" "+TemperaturaLetta,"C",AlertsID()[1])
                 else:
-                    if (float(TemperaturaLetta) - float(TemperaturaADD)) > float(SetPoint):
-                        GPIO.output(Termostato, False)
-                    if (float(TemperaturaLetta) + float(TemperaturaSUB)) < float(SetPoint):
-                        GPIO.output(Termostato, True)
+                    if GPIO.input(Termostato):
+                        if (float(TemperaturaLetta) + float(TemperaturaADD)) > float(SetPoint):
+                            GPIO.output(Termostato, False)
+                    else:
+                        if (float(TemperaturaLetta) - float(TemperaturaSUB)) < float(SetPoint):
+                            GPIO.output(Termostato, True)
+                    #
+                    #if (float(TemperaturaLetta) - float(TemperaturaADD)) > float(SetPoint):
+                    #    GPIO.output(Termostato, False)
+                    #if (float(TemperaturaLetta) + float(TemperaturaSUB)) < float(SetPoint):
+                    #    GPIO.output(Termostato, True)
             # Alla fine devo sempre aggiornare i "tempi"
             TempoInizioCiclo = int(time.time())
             # MyDB.hget("thermo:pid","freqcheck") prendo il valore
