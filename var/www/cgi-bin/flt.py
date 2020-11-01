@@ -161,10 +161,10 @@ def InviaMqttData(DB,Topic,Payload):
     #print("Hostname:", Hostname)
     #print("Port:", Port)
     if NetCheck(Hostname,Port):
-        print("Ho passato il netcheck, pubblico il dato ..")
+        #print("Ho passato il netcheck, pubblico il dato ..")
         try:
             publish.single(Topic, Payload, hostname=Hostname, port=Port, auth=Auth)
-            print("Ho pubblicato il dato !")
+            #print("Ho pubblicato il dato !")
         except socket.gaierror as msg:
             print("Non sono riuscito ad inviare il dato a %s:%d.\nIl messaggio d\'errore e`: %s" % (Hostname, Port, msg))
     else:

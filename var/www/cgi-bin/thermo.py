@@ -160,10 +160,11 @@ SetPoint=FindSetPoint()
 
 try:
     while True: # ???
+        time.sleep(0.2)
         ## Ciclo grafico
         # Aggiorna il file CSV delle temperature
         if int(time.time()) - TempoInizioGrafico > TempoGrafico:
-            print("Ciclo aggiornamento grafico\n")
+            #print("Ciclo aggiornamento grafico\n")
             #
             # Scrivo il file temperature.csv
             # devo solo stare attento a on/man/antigelo/off per il set point
@@ -201,7 +202,7 @@ try:
             #
             # Metto insieme le variabili trovate in una unica riga per l'inserimento nel CSV file
             RigaCSV=DataCSV+","+SetPoint+","+Output+","+str(Temperature()[0])
-            print("---\n")
+            #print("---\n")
             if Temperature()[1] != "":
                 RigaCSV=RigaCSV+Temperature()[1]
             #
@@ -239,13 +240,13 @@ try:
             flt.InviaMqttData( MyDB, 'I/Casa/PianoUno/Corridoio/Temperatura', '{{ "ID" : "Thermo", "Valore" : "{:.3f}" }}'.format(Temperature()[0]) )
             #flt.InviaMqttData( MyDB, 'I/Casa/PrimoPiano/Corridoio/Temperatura', str({ "ID" : "Thermo", "Valore" : "{:.3f}".format(Temperature()[0]) }) ) # Non va bene perche` mette le virgolette semplici
             #flt.InviaMqttData( MyDB, 'I/Casa/PrimoPiano/Corridoio/Temperatura', '{ "ID" : "Thermo", "Valore" : "%.3f" }' % Temperature()[0] )
-            print("End invia mqtt da thermo")
+            #print("End invia mqtt da thermo")
 
         #
         ## Ciclo PID
         # Controlla la temperatura e comanda l'uscita (Termostato)
         if int(time.time()) - TempoInizioCiclo > TempoCiclo:
-            print("Ciclo PID\n")
+            #print("Ciclo PID\n")
             # Set uscita gpio
             Termostato=int(flt.Decode(MyDB.hget("thermo:pid","out")))
             GPIO.setup(Termostato, GPIO.OUT)
@@ -257,7 +258,7 @@ try:
                 TemperaturaLetta=Temperature()[0]
                 # Controlle un'eventuale lettura fuorirange della temperatura ed invio un'allarme
                 if TemperaturaLetta > 35 or TemperaturaLetta < 0:
-                    print("ALLARME: Temperatura letta fuori range!")
+                    #print("ALLARME: Temperatura letta fuori range!")
                     InviaAvviso("msg:thermo:ReadTemp:"+AlertsID()[0],"alert","ALLARME Temperatura letta fuori range (min 0, max 35)",TemperaturaLetta,"C",AlertsID()[1])
                 TemperaturaADD=flt.Decode(MyDB.hget("thermo:pid","tempadd"))
                 TemperaturaSUB=flt.Decode(MyDB.hget("thermo:pid","tempsub"))
@@ -272,11 +273,11 @@ try:
                     SetPoint=flt.Decode(MyDB.hget("temperature:setpoint","antigelo"))
                 else:
                     SetPoint='err'
-                    print("Selezione di funzionamento non valida o non presente")
-                print ("Temperatura letta:",TemperaturaLetta)
-                print ("Set point:",SetPoint)
+                    #print("Selezione di funzionamento non valida o non presente")
+                #print ("Temperatura letta:",TemperaturaLetta)
+                #print ("Set point:",SetPoint)
                 if SetPoint == 'err' or TemperaturaLetta == 'err':
-                    print("Errore di lettura di una temperatura")
+                    #print("Errore di lettura di una temperatura")
                     # Non e` detto che debba stare qua, probabilmente dovro` spostarlo nella funzione che trova le temperature, ha piu` senso.
                     InviaAvviso("msg:thermo:ReadTemp:"+AlertsID()[0],"alert","Errore lettura temperatura: SetPoint o TemperaturaLetta",SetPoint+" "+TemperaturaLetta,"C",AlertsID()[1])
                 else:

@@ -38,6 +38,11 @@ Aggiornamenti
 
 MEMO:
 
+OS Raspbian 7.11 (wheezy)
+
+Aggiunto verifica di funzionamento settimanale (crontab -e):
+  11 1 * * 0 redis-cli -h centred hmset msg:redis:alive:$(date +\%Y\%m\%d\%H\%M\%S) type "alert" desc "Messaggio ciclico, $(hostname) in funzionamento regolare" value "on" um "" date "$(date +\%Y/\%m/\%d\ \%H:\%M:\%S)" > /dev/null
+
 Comandi usati per copia su repository git:
 cp -varpu --parents /etc/rc.local .
 cp -varpu --parents /etc/nginx/fcgiwrap.conf /etc/nginx/sites-available/thermo /etc/nginx/sites-enabled/thermo .
