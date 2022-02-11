@@ -34,11 +34,15 @@ Aggiornamenti
     Miglioramento della gestione PID (non e` un vero e proprio PID, non lo e` mai stato):
       Ora controllo se acceso e se Temperatura attuale + Temperatura scarto (add) > Temperatura di set point, spengo,
                      altrimenti se Temperatura attuale - Temperatura scarto (sub) < Temperatura di set point, accendo.
+  2022 11 02
+    Migliorie software
+
 
 
 MEMO:
 
-OS Raspbian 7.11 (wheezy)
+Release iniziale: OS Raspbian 7.11 (wheezy)
+Release attuale:  Raspbian GNU/Linux 10 (buster) [10.11]
 
 Aggiunto verifica di funzionamento settimanale (crontab -e):
   11 1 * * 0 redis-cli -h centred hmset msg:redis:alive:$(date +\%Y\%m\%d\%H\%M\%S) type "alert" desc "Messaggio ciclico, $(hostname) in funzionamento regolare" value "on" um "" date "$(date +\%Y/\%m/\%d\ \%H:\%M:\%S)" > /dev/null
