@@ -237,9 +237,13 @@ try:
             #
             # Aggiungo qui l'invio della temperatura di riferimento alla centralina level1
             #print("{:f}".format(Temperature()[0]))
-            flt.InviaMqttData( MyDB, 'I/Casa/PianoUno/Corridoio/Temperatura', '{{ "ID" : "Thermo", "Valore" : "{:.3f}" }}'.format(Temperature()[0]) )
-            #flt.InviaMqttData( MyDB, 'I/Casa/PrimoPiano/Corridoio/Temperatura', str({ "ID" : "Thermo", "Valore" : "{:.3f}".format(Temperature()[0]) }) ) # Non va bene perche` mette le virgolette semplici
-            #flt.InviaMqttData( MyDB, 'I/Casa/PrimoPiano/Corridoio/Temperatura', '{ "ID" : "Thermo", "Valore" : "%.3f" }' % Temperature()[0] )
+            TemperaturaLetta=Temperature()[0] # Replico la lettura della temperatura
+            #print(TemperaturaLetta)
+            if TemperaturaLetta != "err":
+                #print("ora mando il dato")
+                flt.InviaMqttData( MyDB, 'I/Casa/PianoUno/Corridoio/Temperatura', '{{ "ID" : "Thermo", "Valore" : "{:.3f}" }}'.format(float(TemperaturaLetta)) )
+                #flt.InviaMqttData( MyDB, 'I/Casa/PianoUno/Corridoio/Temperatura', '{{ "ID" : "Thermo", "Valore" : "{:.3f}" }}'.format(float(Temperature()[0])) )
+                #print("dato inviato")
             #print("End invia mqtt da thermo")
 
         #
@@ -257,9 +261,10 @@ try:
                 # Set temperatura/e, messe qua perche` a monte verrebbero valutate inutilmente
                 TemperaturaLetta=Temperature()[0]
                 # Controlle un'eventuale lettura fuorirange della temperatura ed invio un'allarme
-                if TemperaturaLetta > 35 or TemperaturaLetta < 0:
-                    #print("ALLARME: Temperatura letta fuori range!")
-                    InviaAvviso("msg:thermo:ReadTemp:"+AlertsID()[0],"alert","ALLARME Temperatura letta fuori range (min 0, max 35)",TemperaturaLetta,"C",AlertsID()[1])
+                if TemperaturaLetta != "err":
+                    if TemperaturaLetta > 35 or TemperaturaLetta < 0:
+                        #print("ALLARME: Temperatura letta fuori range!")
+                        InviaAvviso("msg:thermo:ReadTemp:"+AlertsID()[0],"alert","thermo: ALLARME Temperatura letta fuori range (min 0, max 35)",TemperaturaLetta,"C",AlertsID()[1])
                 TemperaturaADD=flt.Decode(MyDB.hget("thermo:pid","tempadd"))
                 TemperaturaSUB=flt.Decode(MyDB.hget("thermo:pid","tempsub"))
                 if flt.Decode(MyDB.get("thermo:function")) == "on":
@@ -276,11 +281,14 @@ try:
                     #print("Selezione di funzionamento non valida o non presente")
                 #print ("Temperatura letta:",TemperaturaLetta)
                 #print ("Set point:",SetPoint)
-                if SetPoint == 'err' or TemperaturaLetta == 'err':
-                    #print("Errore di lettura di una temperatura")
-                    # Non e` detto che debba stare qua, probabilmente dovro` spostarlo nella funzione che trova le temperature, ha piu` senso.
-                    InviaAvviso("msg:thermo:ReadTemp:"+AlertsID()[0],"alert","Errore lettura temperatura: SetPoint o TemperaturaLetta",SetPoint+" "+TemperaturaLetta,"C",AlertsID()[1])
-                else:
+                ## Ho bypassato tutto il gruppo perche` ultimamente la lettura della sonda e` spesso "err" !!!
+                ## quindi ho preferito evitarmi gli innumerevoli avvisi, tanto dovrebbe essere tutto visibile in grafico.
+                #if SetPoint == 'err' or TemperaturaLetta == 'err':
+                #    #print("Errore di lettura di una temperatura")
+                #    # Non e` detto che debba stare qua, probabilmente dovro` spostarlo nella funzione che trova le temperature, ha piu` senso.
+                #    InviaAvviso("msg:thermo:ReadTemp:"+AlertsID()[0],"alert","Errore lettura temperatura: SetPoint o TemperaturaLetta",SetPoint+" "+TemperaturaLetta,"C",AlertsID()[1])
+                #else:
+                if SetPoint != 'err' and TemperaturaLetta != 'err':
                     if GPIO.input(Termostato):
                         if (float(TemperaturaLetta) + float(TemperaturaADD)) > float(SetPoint):
                             GPIO.output(Termostato, False)
